@@ -25,6 +25,14 @@ interface Props extends WithStyles<typeof style> {
 
 class QuotesList extends Component<Props> {
 
+    list = React.createRef<any>();
+
+    componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+        if (this.props.select !== nextProps.select && this.list.current) {
+            this.list.current.forceUpdateGrid();
+        }
+    }
+
     _rowRender = ({style, key, index}: any) => {
 
         const quote = quotes[index];
@@ -84,57 +92,13 @@ class QuotesList extends Component<Props> {
                                 rowRenderer={this._rowRender}
                                 overscanRowCount={0}
                                 overscanColumnCount={0}
-                                random={Math.random()}
+                                ref={this.list}
                             />
                         )
                     }
                 }
             </AutoSizer>
         )
-
-        /*return (
-            <List>
-                {
-                    quotes.map((quote, index) => {
-                        return (
-                            <React.Fragment key={quote.id}>
-                                <ListItem button selected={index === this.props.select} onClick={this.props.changeItem.bind(null, index)}>
-                                    <ListItemText
-                                        primary={quote.shortCode}
-                                        secondary={quote.title}
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <Hook quotes={[quote.id]}>
-                                            {
-                                                (values: any) => {
-                                                    const lp = values[quote.id];
-                                                    if (!lp) {
-                                                        return (
-                                                            <CircularProgress size={16}/>
-                                                        )
-                                                    }
-                                                    return (
-                                                        <QuoteValue value={lp}>
-                                                            <ListItemText
-                                                                primary={lp}
-                                                            />
-                                                        </QuoteValue>
-                                                    );
-                                                }
-                                            }
-                                        </Hook>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                {
-                                    ((index + 1) !== quotes.length) &&
-                                    <Divider/>
-                                }
-                            </React.Fragment>
-                        )
-                    })
-                }
-            </List>
-        );*/
     }
 }
 

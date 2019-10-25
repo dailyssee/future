@@ -113,25 +113,26 @@ class Chart extends Component<Props> {
     mounted = false;
     abortController: AbortController | undefined;
 
-    _update = (props: Props, state: State) => {
+    _update = () => {
 
         if (this.abortController) {
             this.abortController.abort();
+            this.abortController = undefined;
         }
 
-        if (state.loading !== 1) {
+        if (this.state.loading !== 1) {
             this.setState({
                 loading: 1
             });
         }
 
-        const quote = quotes[props.select];
+        const quote = quotes[this.props.select];
 
         if (quote && quote.code) {
 
             this.abortController = new AbortController();
 
-            fetch(`/historyData?symbol=${quote.code}&range=${state.range}&_t=${Date.now()}`, {
+            fetch(`/historyData?symbol=${quote.code}&range=${this.state.range}&_t=${Date.now()}`, {
                 signal: this.abortController.signal
             })
                 .then(data => data.json())
@@ -158,19 +159,22 @@ class Chart extends Component<Props> {
     };
 
     componentDidMount(): void {
-        this._update(this.props, this.state);
+        this._update();
         this.mounted = true;
     }
 
     componentWillUnmount(): void {
         this.mounted = false;
+        if (this.abortController) {
+            this.abortController.abort();
+            this.abortController = undefined;
+        }
     }
 
-    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: any): boolean {
-        if (nextProps.select !== this.props.select || nextState.range !== this.state.range) {
-            this._update(nextProps, nextState);
+    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
+        if (this.props.select !== prevProps.select || this.state.range !== prevState.range) {
+            this._update();
         }
-        return true;
     }
 
     buttonClick = (range: string) => {
@@ -180,7 +184,7 @@ class Chart extends Component<Props> {
     };
 
     handleRepeat = () => {
-        this._update(this.props, this.state);
+        this._update();
     };
 
     render () {
