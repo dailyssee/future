@@ -57,7 +57,7 @@ class App extends Component<Props> {
             <>
                 <CssBaseline/>
                 <div className={classes.box}>
-                    <Typography className={classes.title}>FutureComes</Typography>
+                    <Typography className={classes.title}>Future</Typography>
 
                     <Chart
                         select={this.state.select}

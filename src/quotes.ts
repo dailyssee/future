@@ -86,7 +86,7 @@ export default [
     {
         "id": 139908,
         "code": "FX_IDC:INRRUB",
-        "title": "Индийския рупия",
+        "title": "Индийская рупия",
         "shortCode": "INRRUB"
     }
 ];
